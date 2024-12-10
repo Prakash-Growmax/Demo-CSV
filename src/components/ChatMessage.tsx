@@ -19,18 +19,20 @@ export function ChatMessage({ message }: ChatMessageProps) {
 
   const renderContent = () => {
     if (message.type === "text") {
-      return true ? (
-        <p className="text-sm">{message.content}</p>
-      ) : (
-        <div className="text-sm">
-          <Typewriter
-            options={{
-              strings: [message.content],
-              autoStart: true,
-              delay: 30,
-              cursor: "",
-            }}
-          />
+      return (
+        <div className="text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+          {message.isTyping ? (
+            <Typewriter
+              options={{
+                strings: [message.content],
+                autoStart: true,
+                delay: 30,
+                cursor: "",
+              }}
+            />
+          ) : (
+            <p>{message.content}</p>
+          )}
         </div>
       );
     }
@@ -38,10 +40,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
     if (message.type === "chart") {
       return (
         <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
+          initial={{ opacity: 0, transform: "scale(0.95)" }}
+          animate={{ opacity: 1, transform: "scale(1)" }}
           transition={{ duration: 0.5 }}
-          className="mt-4 relative"
+          className="relative mt-4"
         >
           <Button
             variant="outline"
@@ -49,7 +51,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
             className="absolute top-2 right-2 z-10"
             onClick={() => setIsFullscreen(true)}
           >
-            <Maximize2 className="h-4 w-4" />
+            <Maximize2 className="h-4 w-4 text-gray-500 hover:text-gray-800" />
           </Button>
           <DataChart data={message.data} />
         </motion.div>
@@ -59,8 +61,8 @@ export function ChatMessage({ message }: ChatMessageProps) {
     if (message.type === "table") {
       return (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="mt-4 overflow-x-auto"
         >
@@ -72,34 +74,36 @@ export function ChatMessage({ message }: ChatMessageProps) {
 
   return (
     <>
-      {/* <motion.div
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className={`flex gap-4 ${isUser ? "justify-end" : "justify-start"}`}
-      > */}
-      <div
-        className={`flex gap-3 max-w-[80%] ${
-          isUser ? "flex-row-reverse" : "flex-row"
+        className={`flex items-start gap-4 ${
+          isUser ? "justify-end" : "justify-start"
         }`}
       >
-        <div className="flex-shrink-0">
-          {isUser ? (
-            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-              <User className="w-5 h-5 text-primary-foreground" />
-            </div>
-          ) : (
-            <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
-              <Bot className="w-5 h-5 text-secondary-foreground" />
-            </div>
-          )}
+        <div
+          className={`flex items-center justify-center w-10 h-10 rounded-full ${
+            isUser
+              ? "bg-primary text-primary-foreground"
+              : "bg-secondary text-secondary-foreground"
+          }`}
+        >
+          {isUser ? <User className="w-6 h-6" /> : <Bot className="w-6 h-6" />}
         </div>
-        <Card className="w-full p-4 space-y-2">{renderContent()}</Card>
-      </div>
-      {/* </motion.div> */}
+        <Card
+          className={`w-full p-4 shadow-lg rounded-lg border ${
+            isUser
+              ? "bg-primary/10 text-primary-foreground border-primary"
+              : "bg-secondary/10 text-secondary-foreground border-secondary"
+          }`}
+        >
+          {renderContent()}
+        </Card>
+      </motion.div>
 
       <Dialog open={isFullscreen} onOpenChange={setIsFullscreen}>
-        <DialogContent className="max-w-[90vw] w-[90vw] h-[90vh]">
+        <DialogContent className="max-w-[90vw] w-[90vw] h-[90vh] overflow-auto">
           {message.type === "chart" && <DataChart data={message.data} />}
         </DialogContent>
       </Dialog>
