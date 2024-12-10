@@ -1,8 +1,11 @@
 export async function getResponse(prompt: string, response) {
+  console.log("🚀 ~ getResponse ~ response:", response);
+  console.log("🚀 ~ getResponse ~ prompt:", prompt);
   const promptLower = prompt.toLowerCase();
   try {
     if (true) {
       if (true) {
+        return createImgResponse("bar", response?.charts);
         return createChartResponse("bar", response?.charts?.bar);
       } else if (promptLower.includes("line")) {
         return createChartResponse("line", response?.charts?.line);
@@ -71,5 +74,16 @@ function createChartResponse(type, response) {
       yAxis: response.yAxis || null,
       data: response.data,
     },
+  };
+}
+
+function createImgResponse(type, response) {
+  return {
+    id: Date.now().toString(),
+    content: `Here's a ${type} chart showing the response:`,
+    role: "assistant",
+    timestamp: new Date(),
+    type: "chart",
+    data: response?.bar,
   };
 }

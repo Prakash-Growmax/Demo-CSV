@@ -38,6 +38,8 @@ export function ChatMessage({ message }: ChatMessageProps) {
     }
 
     if (message.type === "chart") {
+      console.log(message);
+
       return (
         <motion.div
           initial={{ opacity: 0, transform: "scale(0.95)" }}
@@ -92,7 +94,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
           {isUser ? <User className="w-6 h-6" /> : <Bot className="w-6 h-6" />}
         </div>
         <Card
-          className={`w-full p-4 shadow-lg rounded-lg border ${
+          className={`w-[75%] p-4 shadow-lg rounded-lg border ${
             isUser
               ? "bg-primary/10 text-primary-foreground border-primary"
               : "bg-secondary/10 text-secondary-foreground border-secondary"
