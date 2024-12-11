@@ -1,6 +1,5 @@
 import { ChatInput } from "@/components/ChatInput";
 import { ChatMessage } from "@/components/ChatMessage";
-import { FileUpload } from "@/components/FileUpload";
 import { TypingIndicator } from "@/components/TypingIndicator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -10,6 +9,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Upload } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { CSVPreview } from "./components/CSVPreview/CSVPreview";
+import GChatterIntro from "./components/GChatter/GChatterInto";
 import { Header } from "./components/Header/Header";
 import { getResponse } from "./lib/pandas-api";
 import { S3UploadError, uploadToS3 } from "./lib/s3-client";
@@ -169,42 +169,19 @@ function App() {
         <div className="flex flex-col w-screen">
           <main className="flex-1 flex flex-col">
             <AnimatePresence mode="wait">
-              {!state.s3Key ? (
-                <div className="flex-1 flex items-center justify-center p-4">
-                  <FileUpload
-                    // onDataLoaded={handleDataLoaded}
-                    onError={handleError}
-                    onFileUploaded={(key: string) => {
-                      setState({
-                        ...state,
-                        s3Key: key,
-                        messages: [
-                          {
-                            id: Date.now().toString(),
-                            content:
-                              'CSV data loaded successfully! Try asking me questions about the data. Type "help" to see what I can do.',
-                            role: "assistant",
-                            timestamp: new Date(),
-                            type: "text",
-                          },
-                        ],
-                      });
-                    }}
-                  />
-                </div>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="flex-1 flex flex-col"
-                >
-                  <div className="flex flex-col h-screen">
-                    <h1 className="text-2xl font-bold text-center my-4">
-                      CSV Conversational AI
-                    </h1>
-
-                    <ScrollArea className="flex-1 px-4 overflow-auto">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex-1 flex flex-col"
+              >
+                <div className="flex flex-col h-screen ">
+                  <h1 className="text-2xl font-bold text-center my-4">
+                    CSV Conversational AI
+                  </h1>
+                  {!state.s3Key && <GChatterIntro />}
+                  <div className="w-full max-w-[75%] mx-auto h-full">
+                    <ScrollArea className="flex-1 px-4 overflow-auto my-4">
                       <div className="mx-auto py-4 space-y-6">
                         {state.messages.map((message) => (
                           <ChatMessage key={message.id} message={message} />
@@ -212,63 +189,64 @@ function App() {
                         {state.isLoading && <TypingIndicator />}
                       </div>
                     </ScrollArea>
-                    {state.s3Key && (
-                      <div className="m-4">
-                        <CSVPreview
-                          s3Key={state.s3Key || ""}
-                          bucket={import.meta.env.VITE_S3_BUCKET_NAME}
-                        />
-                      </div>
-                    )}
-                    <div className="flex items-center sticky bottom-0 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                      <div className="relative flex-shrink-0 group ">
-                        {/* Upload Icon */}
-                        <Upload
-                          size={24}
-                          color="black"
-                          className="cursor-pointer group-hover:bg-gray-300 active:bg-gray-400 w-10 h-10 p-2 rounded-full"
-                          onClick={() => {
-                            // Create a hidden file input to handle file selection
-                            const input = document.createElement("input");
-                            input.type = "file";
-                            input.accept = ".csv"; // Allow only CSV files
-                            input.onchange = (event) =>
-                              handleFileUpload(event, (key) => {
-                                setState((prevState) => ({
-                                  ...prevState,
-                                  s3Key: key,
-                                  messages: [
-                                    ...prevState.messages,
-                                    {
-                                      id: Date.now().toString(),
-                                      content:
-                                        'CSV data loaded successfully! Try asking me questions about the data. Type "help" to see what I can do.',
-                                      role: "assistant",
-                                      timestamp: new Date(),
-                                      type: "text",
-                                    },
-                                  ],
-                                }));
-                              });
-                            input.click();
-                          }}
-                        />
+                  </div>
+                  {state.s3Key && (
+                    <div className="m-4">
+                      <CSVPreview
+                        s3Key={state.s3Key || ""}
+                        bucket={import.meta.env.VITE_S3_BUCKET_NAME}
+                      />
+                    </div>
+                  )}
 
-                        {/* Tooltip */}
-                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 hidden group-hover:block bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                          Upload
-                        </div>
-                      </div>
-                      <div className=" flex-1 max-w-3xl p-4">
-                        <ChatInput
-                          onSend={handleSendMessage}
-                          disabled={state.isLoading || !state.s3Key}
-                        />
+                  <div className="flex items-center sticky bottom-0 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
+                    <div className="relative flex-shrink-0 group ">
+                      {/* Upload Icon */}
+                      <Upload
+                        size={24}
+                        color="black"
+                        className="cursor-pointer group-hover:bg-gray-300 active:bg-gray-400 w-10 h-10 p-2 rounded-full"
+                        onClick={() => {
+                          // Create a hidden file input to handle file selection
+                          const input = document.createElement("input");
+                          input.type = "file";
+                          input.accept = ".csv"; // Allow only CSV files
+                          input.onchange = (event) =>
+                            handleFileUpload(event, (key) => {
+                              setState((prevState) => ({
+                                ...prevState,
+                                s3Key: key,
+                                messages: [
+                                  ...prevState.messages,
+                                  {
+                                    id: Date.now().toString(),
+                                    content:
+                                      'CSV data loaded successfully! Try asking me questions about the data. Type "help" to see what I can do.',
+                                    role: "assistant",
+                                    timestamp: new Date(),
+                                    type: "text",
+                                  },
+                                ],
+                              }));
+                            });
+                          input.click();
+                        }}
+                      />
+
+                      {/* Tooltip */}
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 hidden group-hover:block bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+                        Upload
                       </div>
                     </div>
+                    <div className=" flex-1  p-4">
+                      <ChatInput
+                        onSend={handleSendMessage}
+                        disabled={state.isLoading || !state.s3Key}
+                      />
+                    </div>
                   </div>
-                </motion.div>
-              )}
+                </div>
+              </motion.div>
             </AnimatePresence>
           </main>
         </div>
