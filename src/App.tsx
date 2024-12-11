@@ -13,8 +13,10 @@ import GChatterIntro from "./components/GChatter/GChatterInto";
 import { Header } from "./components/Header/Header";
 import { getResponse } from "./lib/pandas-api";
 import { S3UploadError, uploadToS3 } from "./lib/s3-client";
+import { Progress } from "./components/ui/progress";
 
 function App() {
+  const [isUploading, setIsUploading] = useState(false);
   const [state, setState] = useState<ChatState>({
     messages: [],
     isLoading: false,
@@ -121,45 +123,7 @@ function App() {
     });
   }
 
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(
-    null
-  );
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const handleFileUpload = useCallback(
-    async (
-      event: React.ChangeEvent<HTMLInputElement>,
-      onFileUploaded: (s3Key: string) => void
-    ) => {
-      const file = event.target.files?.[0];
-      if (!file) return; // Early exit if no file selected
 
-      setFileName(file.name);
-      setIsUploading(true);
-      setError(null);
-
-      try {
-        const s3Key = await uploadToS3(file, (progress) => {
-          setUploadProgress(progress);
-        });
-
-        onFileUploaded(s3Key); // Trigger the callback with the uploaded key
-      } catch (error) {
-        if (error instanceof S3UploadError) {
-          setError(error.message);
-          handleError(error.message);
-        } else {
-          setError("An unexpected error occurred");
-          handleError("An unexpected error occurred");
-        }
-      } finally {
-        setIsUploading(false);
-        setUploadProgress(null);
-      }
-    },
-    [handleError]
-  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -182,10 +146,16 @@ function App() {
                   {!state.s3Key && <GChatterIntro />}
                   <div className="w-full max-w-[75%] mx-auto h-full">
                     <ScrollArea className="flex-1 px-4 overflow-auto my-4">
-                      <div className="mx-auto py-4 space-y-6">
+                    <div className="mx-auto py-4 space-y-6">
+                      
                         {state.messages.map((message) => (
                           <ChatMessage key={message.id} message={message} />
                         ))}
+     
+
+
+
+                  
                         {state.isLoading && <TypingIndicator />}
                       </div>
                     </ScrollArea>
@@ -200,50 +170,32 @@ function App() {
                   )}
 
                   <div className="flex items-center sticky bottom-0 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
-                    <div className="relative flex-shrink-0 group ">
-                      {/* Upload Icon */}
-                      <Upload
-                        size={24}
-                        color="black"
-                        className="cursor-pointer group-hover:bg-gray-300 active:bg-gray-400 w-10 h-10 p-2 rounded-full"
-                        onClick={() => {
-                          // Create a hidden file input to handle file selection
-                          const input = document.createElement("input");
-                          input.type = "file";
-                          input.accept = ".csv"; // Allow only CSV files
-                          input.onchange = (event) =>
-                            handleFileUpload(event, (key) => {
-                              setState((prevState) => ({
-                                ...prevState,
-                                s3Key: key,
-                                messages: [
-                                  ...prevState.messages,
-                                  {
-                                    id: Date.now().toString(),
-                                    content:
-                                      'CSV data loaded successfully! Try asking me questions about the data. Type "help" to see what I can do.',
-                                    role: "assistant",
-                                    timestamp: new Date(),
-                                    type: "text",
-                                  },
-                                ],
-                              }));
-                            });
-                          input.click();
-                        }}
-                      />
-
-                      {/* Tooltip */}
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 hidden group-hover:block bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                        Upload
-                      </div>
-                    </div>
-                    <div className=" flex-1  p-4">
-                      <ChatInput
-                        onSend={handleSendMessage}
-                        disabled={state.isLoading || !state.s3Key}
-                      />
-                    </div>
+                  
+                  <div className="flex-1 w-full p-4 pl-48 pr-48">
+                  <ChatInput
+      onSend={handleSendMessage}
+      disabled={state.isLoading || !state.s3Key}
+      onError={handleError}
+      isUploading={isUploading}
+      setIsUploading={setIsUploading}
+      onFileUploaded={(key: string) => {
+        setState({
+          ...state,
+          s3Key: key,
+          messages: [
+            {
+              id: Date.now().toString(),
+              content:
+                'CSV data loaded successfully! Try asking me questions about the data. Type "help" to see what I can do.',
+              role: "assistant",
+              timestamp: new Date(),
+              type: "text",
+            },
+          ],
+        });
+      }}
+    />
+  </div>
                   </div>
                 </div>
               </motion.div>

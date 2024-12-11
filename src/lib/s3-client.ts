@@ -1,5 +1,6 @@
 import { CSVPreviewData, FileMetadata, PreviewError } from "@/types/csv";
-import { UploadProgress } from "@/types/s3";
+// 
+
 import {
   GetObjectCommand,
   HeadObjectCommand,
@@ -17,7 +18,11 @@ const s3Client = new S3Client({
     secretAccessKey: import.meta.env.VITE_AWS_SECRET_ACCESS_KEY,
   },
 });
-
+export interface UploadProgress {
+  loaded: number;
+  total: number;
+  percentage: number;
+}
 export class S3UploadError extends Error {
   constructor(message: string, public code?: string) {
     super(message);
