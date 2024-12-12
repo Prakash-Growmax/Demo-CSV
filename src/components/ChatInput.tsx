@@ -108,7 +108,7 @@ export function ChatInput({ onSend, disabled, onFileUploaded, onError,isUploadin
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask a question about your data..."
-            className="flex-1 min-h-[60px] max-h-[144px] rounded-3xl border border-blue-500 pr-12 pl-12 pl-[50px] hover:border-blue-500 focus:border-blue-500 resize-none placeholder:pl-[20px] placeholder:mt-[100px] placeholder:font-semibold pt-2 pb-2 leading-[1.5] focus:placeholder:mt-16 text-base placeholder:top-16"
+           className="flex-1 min-h-[60px] max-h-[144px] rounded-3xl border border-blue-500 pr-12 pl-12 pl-[50px] hover:border-blue-500 focus:border-blue-500 resize-none placeholder:pl-[20px] placeholder:font-semibold pt-2 pb-2 leading-[1.5] text-base placeholder:py-2"
             rows={rows}
           />
         </div>

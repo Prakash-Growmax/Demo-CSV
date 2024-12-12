@@ -126,7 +126,7 @@ function App() {
 
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-100">
       <Header createNewChat={createNewChat} />
       <div className="flex h-screen">
         {/* Main Content */}
@@ -144,7 +144,7 @@ function App() {
                     CSV Conversational AI
                   </h1>
                   {!state.s3Key && <GChatterIntro />}
-                  <div className="w-full max-w-[75%] mx-auto h-full">
+                  <div className="w-full max-w-[100%] mx-auto h-full">
                     <ScrollArea className="flex-1 px-4 overflow-auto my-4">
                     <div className="mx-auto py-4 space-y-6">
                       
