@@ -136,8 +136,18 @@ function App() {
               >
                 <div className="flex flex-col h-screen ">
                   <div className="w-full max-w-[100%] mx-auto h-full">
-                    <ScrollArea className="flex-1 px-4 overflow-auto my-4">
-                      <div className="mx-auto py-4 space-y-6">
+                    <ScrollArea
+                      className="flex-1 px-4 overflow-auto mt-16"
+                      style={{ height: "calc(100vh - 260px)" }}
+                    >
+                      <div
+                        className={`mx-auto space-y-6 flex flex-col ${
+                          state.s3Key
+                            ? "pt-4 items-start justify-start"
+                            : "justify-center items-center "
+                        } w-full`}
+                        style={{ height: "calc(100vh - 260px)" }}
+                      >
                         {!state.s3Key && <GChatterIntro />}
 
                         {state.messages.map((message) => (
@@ -157,7 +167,7 @@ function App() {
                     </div>
                   )}
 
-                  <div className="flex items-center sticky bottom-0 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
+                  <div className="flex items-center sticky bottom-0  px-4">
                     <div className="flex-1 w-full p-4 pl-48 pr-48">
                       <ChatInput
                         onSend={handleSendMessage}

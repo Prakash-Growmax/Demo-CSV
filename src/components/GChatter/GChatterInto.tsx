@@ -1,6 +1,6 @@
 export const GChatterIntro = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4 overflow-hidden mt-16 mb-48">
+    <div className="flex flex-col items-center justify-center w-full bg-gray-50 p-8">
       <div className="max-w-2xl w-full text-center space-y-6">
         <div className="flex items-center justify-center gap-3 mb-4">
           <div className="w-12 h-12 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center">
