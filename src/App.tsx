@@ -6,14 +6,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMessageQueue } from "@/lib/useMessageQueue";
 import { ChatState, Message } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
-import { Upload } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { CSVPreview } from "./components/CSVPreview/CSVPreview";
 import GChatterIntro from "./components/GChatter/GChatterInto";
 import { Header } from "./components/Header/Header";
 import { getResponse } from "./lib/pandas-api";
-import { S3UploadError, uploadToS3 } from "./lib/s3-client";
-import { Progress } from "./components/ui/progress";
 
 function App() {
   const [isUploading, setIsUploading] = useState(false);
@@ -123,8 +120,6 @@ function App() {
     });
   }
 
-
-
   return (
     <div className="min-h-screen bg-gray-100">
       <Header createNewChat={createNewChat} />
@@ -140,22 +135,15 @@ function App() {
                 className="flex-1 flex flex-col"
               >
                 <div className="flex flex-col h-screen ">
-                  <h1 className="text-2xl font-bold text-center my-4">
-                    CSV Conversational AI
-                  </h1>
-                  {!state.s3Key && <GChatterIntro />}
                   <div className="w-full max-w-[100%] mx-auto h-full">
                     <ScrollArea className="flex-1 px-4 overflow-auto my-4">
-                    <div className="mx-auto py-4 space-y-6">
-                      
+                      <div className="mx-auto py-4 space-y-6">
+                        {!state.s3Key && <GChatterIntro />}
+
                         {state.messages.map((message) => (
                           <ChatMessage key={message.id} message={message} />
                         ))}
-     
 
-
-
-                  
                         {state.isLoading && <TypingIndicator />}
                       </div>
                     </ScrollArea>
@@ -170,32 +158,31 @@ function App() {
                   )}
 
                   <div className="flex items-center sticky bottom-0 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
-                  
-                  <div className="flex-1 w-full p-4 pl-48 pr-48">
-                  <ChatInput
-      onSend={handleSendMessage}
-      disabled={state.isLoading || !state.s3Key}
-      onError={handleError}
-      isUploading={isUploading}
-      setIsUploading={setIsUploading}
-      onFileUploaded={(key: string) => {
-        setState({
-          ...state,
-          s3Key: key,
-          messages: [
-            {
-              id: Date.now().toString(),
-              content:
-                'CSV data loaded successfully! Try asking me questions about the data. Type "help" to see what I can do.',
-              role: "assistant",
-              timestamp: new Date(),
-              type: "text",
-            },
-          ],
-        });
-      }}
-    />
-  </div>
+                    <div className="flex-1 w-full p-4 pl-48 pr-48">
+                      <ChatInput
+                        onSend={handleSendMessage}
+                        disabled={state.isLoading || !state.s3Key}
+                        onError={handleError}
+                        isUploading={isUploading}
+                        setIsUploading={setIsUploading}
+                        onFileUploaded={(key: string) => {
+                          setState({
+                            ...state,
+                            s3Key: key,
+                            messages: [
+                              {
+                                id: Date.now().toString(),
+                                content:
+                                  'CSV data loaded successfully! Try asking me questions about the data. Type "help" to see what I can do.',
+                                role: "assistant",
+                                timestamp: new Date(),
+                                type: "text",
+                              },
+                            ],
+                          });
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </motion.div>
