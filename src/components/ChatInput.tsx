@@ -5,6 +5,8 @@ import { Send, Upload } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 
 import { S3UploadError, UploadProgress, uploadToS3 } from "@/lib/s3-client";
+import { CSVPreview } from "./CSVPreview/CSVPreview";
+import Spinner from "./ui/Spinner";
 
 
 interface ChatInputProps {
@@ -14,10 +16,11 @@ interface ChatInputProps {
   onError: (error: string) => void;
   isUploading:boolean;
   setIsUploading:(state:boolean)=>void
-  
+  s3Key:string
+  bucket:string
 }
 
-export function ChatInput({ onSend, disabled, onFileUploaded, onError,isUploading,setIsUploading }: ChatInputProps) {
+export function ChatInput({ onSend, disabled, onFileUploaded, onError,isUploading,setIsUploading,s3Key,bucket}: ChatInputProps) {
   const [input, setInput] = useState("");
   const [rows, setRows] = useState(1);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -77,16 +80,29 @@ export function ChatInput({ onSend, disabled, onFileUploaded, onError,isUploadin
   };
 
   return (
-    <motion.form
+    <>
+     <motion.form
       onSubmit={handleSubmit}
       className="flex items-center gap-2 p-4 bg-white shadow-md hover:shadow-lg rounded-lg border border-gray-300 min-h-40"
       initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-    >
-      <div className="relative flex items-center justify-content flex-1 mb-6">
+      animate={{ opacity: 1, y: 0 }}>
+        <div className="flex flex-col w-full">
+        {s3Key && (
+                    <div>
+                      <CSVPreview
+                        s3Key={s3Key || ""}
+                        bucket={import.meta.env.VITE_S3_BUCKET_NAME}
+                      />
+                    </div>
+                  )}
+                    <div className="relative flex items-center justify-content flex-1 mb-6">
         <div className="relative flex-1">
           <div className="absolute top-1/2 left-4 z-10 transform -translate-y-1/2">
-            <input
+           {isUploading ? (
+            <Spinner/>
+           ):(
+            <>
+              <input
               type="file"
               accept=".csv"
               onChange={handleFileUpload}
@@ -96,10 +112,13 @@ export function ChatInput({ onSend, disabled, onFileUploaded, onError,isUploadin
             />
             <Upload
               size={24}
-              color="black"
-              className="cursor-pointer hover:bg-gray-200 active:bg-gray-300 w-8 h-8 p-1 rounded-full"
+              // color="#3B82F6"
+              className="cursor-pointer text-blue-700 hover:bg-gray-200 active:bg-gray-300 w-8 h-8 p-1 rounded-full"
               onClick={() => document.getElementById("csv-upload")?.click()}
             />
+            </>
+           )}
+        
           </div>
 
           <Textarea
@@ -108,7 +127,7 @@ export function ChatInput({ onSend, disabled, onFileUploaded, onError,isUploadin
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Ask a question about your data..."
-           className="flex-1 min-h-[60px] max-h-[144px] rounded-3xl border border-blue-500 pr-12 pl-12 pl-[50px] hover:border-blue-500 focus:border-blue-500 resize-none placeholder:pl-[20px] placeholder:font-semibold pt-2 pb-2 leading-[1.5] text-base placeholder:py-2"
+           className="flex-1 lg:min-h-[60px] max-h-[144px] min-h-[100px] rounded-3xl border border-blue-500 pt-[10px] pb-[10px] pr-12 pl-12 pl-[50px] hover:border-blue-500 focus:border-blue-500 resize-none placeholder:pl-[20px] placeholder:font-semibold pt-2 pb-2 leading-[1.5] text-base placeholder:py-2"
             rows={rows}
           />
         </div>
@@ -119,6 +138,11 @@ export function ChatInput({ onSend, disabled, onFileUploaded, onError,isUploadin
           <Send className="h-4 w-4" />
         </Button>
       </div>
+        </div>
+      
+    
     </motion.form>
+    </>
+   
   );
 }

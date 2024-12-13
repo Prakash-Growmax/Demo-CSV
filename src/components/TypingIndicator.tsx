@@ -8,7 +8,7 @@ export function TypingIndicator() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
-      className="flex gap-3"
+      className="flex gap-3 ml-64"
     >
       <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
         <Bot className="w-5 h-5 text-secondary-foreground" />

@@ -1,23 +1,31 @@
 import { MessageCirclePlus } from "lucide-react";
 import { Logo } from "./Logo";
 import { UserMenu } from "./UserMenu";
+import Sidebar from "./Sidebar";
 
-export function Header({ createNewChat }) {
+export function Header({ createNewChat,open,setOpen }) {
   return (
     <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 shadow-sm z-50">
       <div className="max-w-7xl mx-auto h-full px-4 flex items-center justify-between">
+        <div className="flex">
+          <div className="mr-16">
+          <Sidebar createNewChat={createNewChat} open={open} setOpen={setOpen}/>
+          </div>
+        <div className="-ml-80 mt-2">
         <Logo />
+        </div>
+       
+        </div>
+       
         {/* <Navigation /> */}
         <UserMenu />
 
         <div className="relative group">
-          <MessageCirclePlus
+          {/* <MessageCirclePlus
             className="cursor-pointer w-6 h-6 text-indigo-600"
             onClick={() => createNewChat()}
-          />
-          <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 hidden group-hover:block bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-            New Chat
-          </div>
+          /> */}
+        
         </div>
       </div>
     </header>

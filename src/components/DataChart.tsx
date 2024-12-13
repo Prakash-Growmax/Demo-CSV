@@ -5,7 +5,7 @@ interface DataChartProps {
 }
 
 export function DataChart({ data }: DataChartProps) {
-  console.log("🚀 ~ DataChart ~ data:", data);
+
   const renderChart = () => {
     return (
       <div
