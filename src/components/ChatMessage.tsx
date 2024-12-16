@@ -11,12 +11,14 @@ import { useCurrentPng} from "recharts-to-png";
 import FileSaver from "file-saver";
 interface ChatMessageProps {
   message: Message;
+  
 }
 
-export function ChatMessage({ message }: ChatMessageProps) {
+export function ChatMessage({ message}: ChatMessageProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const isUser = message.role === "user";
   const [getAreaPng, { ref: areaRef }] = useCurrentPng();
+
 
   const handleDownload = useCallback(async () => {
     try {
@@ -70,12 +72,16 @@ export function ChatMessage({ message }: ChatMessageProps) {
           >
             <Maximize2 className="h-4 w-4 text-gray-500 hover:text-gray-800" />
           </Button>
-          <div style={{ width: '600px', height: '350px' }} className="flex flex-col">
-           <div ref={areaRef}>
+          {/* <div style={{ width: '600px', height: '350px' }} className="flex flex-col"> */}
+        
+            <div 
+  className="flex flex-col  lg:w-[600px] lg:h-[350px] md:w-[400px] max-w-full" 
+>
+<div ref={areaRef}>
             <DataChart data={message.data} />
             </div>
  
-  <hr className="m-2 border-gray-300 w-full" />
+  {/* <hr className="m-2 border-gray-300 w-full" /> */}
   {/* <button
         onClick={handleDownload}
         className="bg-transparent text-gray-500 py-2 px-4 rounded mt-4"
@@ -152,10 +158,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className={`flex items-start gap-4`}
+        className={`flex items-center gap-4 md:ml-8`}
       >
-        <div className="flex flex-col mr-auto lg:ml-64 -ml-8">
-          <div className="flex">
+        <div className="flex flex-col  mr-auto lg:ml-64 -ml-8">
+            <div className="flex">
           <div className="flex items-center justify-center w-8 h-8 rounded-full bg-secondary text-secondary-foreground -mt-2">
           <Bot className="w-6 h-6" />
           </div>
@@ -163,7 +169,8 @@ export function ChatMessage({ message }: ChatMessageProps) {
             <p>Assistant G-Chatter</p>
           </div>
           </div>
-          <div className="bg-white p-4 h-auto ml-10 rounded-lg mt-2 lg:w-full w-80">
+      
+          <div className="bg-white p-4 h-auto ml-10 rounded-lg mt-2 lg:w-full md:w-full w-80">
           {renderContent()}
         </div>
           

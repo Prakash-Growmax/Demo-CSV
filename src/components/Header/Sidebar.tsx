@@ -19,6 +19,7 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { MessageCirclePlus } from 'lucide-react';
+import { useMediaQuery } from '@mui/material';
 
 const drawerWidth = 240;
 
@@ -88,6 +89,7 @@ interface SideBarProps{
 
 export default function Sidebar({open,setOpen,createNewChat}:SideBarProps) {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 //   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -97,6 +99,10 @@ export default function Sidebar({open,setOpen,createNewChat}:SideBarProps) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const handleNewChat = () =>{
+    createNewChat()
+    setOpen(false)
+  }
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -122,10 +128,10 @@ export default function Sidebar({open,setOpen,createNewChat}:SideBarProps) {
     
       <Drawer
         sx={{
-          width: drawerWidth,
+          width:isMobile ? "100%":drawerWidth,
           flexShrink: 0,
           '& .MuiDrawer-paper': {
-            width: drawerWidth,
+            width:isMobile ? "100%":drawerWidth,
             boxSizing: 'border-box',
           },
         }}
@@ -140,7 +146,7 @@ export default function Sidebar({open,setOpen,createNewChat}:SideBarProps) {
         </DrawerHeader>
         {/* <Divider /> */}
         <List>
-        <div className='flex cursor-pointer px-4' onClick={() => createNewChat()}>
+        <div className='flex cursor-pointer px-4' onClick={handleNewChat}>
             <div>
             <MessageCirclePlus
             className="w-6 h-6 text-indigo-600"

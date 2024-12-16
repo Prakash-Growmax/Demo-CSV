@@ -122,14 +122,16 @@ export function ChatInput({ onSend, disabled, onFileUploaded, onError,isUploadin
           </div>
 
           <Textarea
-            ref={textareaRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Ask a question about your data..."
-           className="flex-1 lg:min-h-[60px] max-h-[144px] min-h-[100px] rounded-3xl border border-blue-500 pt-[10px] pb-[10px] pr-12 pl-12 pl-[50px] hover:border-blue-500 focus:border-blue-500 resize-none placeholder:pl-[20px] placeholder:font-semibold pt-2 pb-2 leading-[1.5] text-base placeholder:py-2"
-            rows={rows}
-          />
+  ref={textareaRef}
+  value={input}
+  onChange={(e) => setInput(e.target.value)}
+  onKeyDown={handleKeyDown}
+  placeholder="Enter your question"
+  className="flex-1 h-[60px] rounded-3xl border border-blue-500 pt-[15px] pb-[10px] pr-12 pl-12 pl-[70px] hover:border-blue-500 focus:border-blue-500 resize-none placeholder:pl-[5px] placeholder:font-semibold lg:placeholder:text-base placeholder:text-sm leading-[1.5] text-base"
+  rows={1} // Use a fixed row size for large screens
+/>
+
+
         </div>
         <Button
           type="submit"
