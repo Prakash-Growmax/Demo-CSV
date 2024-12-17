@@ -18,7 +18,7 @@ export function ChatMessage({ message}: ChatMessageProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const isUser = message.role === "user";
   const [getAreaPng, { ref: areaRef }] = useCurrentPng();
-
+  
 
   const handleDownload = useCallback(async () => {
     try {

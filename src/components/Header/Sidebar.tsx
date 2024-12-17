@@ -20,8 +20,11 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { MessageCirclePlus } from 'lucide-react';
 import { useMediaQuery } from '@mui/material';
+import { useChatList } from '@/hooks/useChatList';
+import ChatIcon from '../ui/chat-icon';
+import { useNavigate } from 'react-router-dom';
 
-const drawerWidth = 240;
+const drawerWidth = 280;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean;
@@ -91,19 +94,26 @@ export default function Sidebar({open,setOpen,createNewChat}:SideBarProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 //   const [open, setOpen] = React.useState(false);
-
+   const navigator = useNavigate();
   const handleDrawerOpen = () => {
     setOpen(true);
   };
 
-  const handleDrawerClose = () => {
+  const handleDrawerClose = (e) => {
+    e.preventDefault(); // Prevent default link behavior
+    e.stopPropagation(); 
     setOpen(false);
   };
-  const handleNewChat = () =>{
+  const handleNewChat = (e) =>{
+    e.preventDefault(); // Prevent default link behavior
+    e.stopPropagation(); 
     createNewChat()
     setOpen(false)
+    navigator('/');
   }
-
+ 
+  
+  const {data}=useChatList();
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -159,6 +169,38 @@ export default function Sidebar({open,setOpen,createNewChat}:SideBarProps) {
         
         </div>
         </List>
+        <List>
+          <p className='flex text-base font-bold ml-4'>Recents</p>
+  {data.map((datas, index) => (
+    <ListItem key={index} className="flex items-center">
+      {/* Icon and Text Section */}
+      <div className='flex'   onClick={(e) => {
+    e.preventDefault(); // Prevent default link behavior
+    e.stopPropagation(); // Stop bubbling
+    navigator(`/chat/${datas.chat_id}`);
+    setOpen(true)
+  }}>
+      <div className='flex mt-2'>
+      <ListItemIcon className="min-w-[30px] mr-2"> {/* Closer spacing */}
+        <ChatIcon />
+      </ListItemIcon>
+      </div>
+      <div className='flex -ml-8'>
+      <ListItemText
+        primary={
+          <p className="text-sm text-gray-700 truncate w-[200px]">
+            {datas.last_message}
+          </p>
+        }
+      />
+      </div>
+      </div>
+  
+    
+    </ListItem>
+  ))}
+</List>
+
       </Drawer>
   
     </Box>
