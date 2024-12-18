@@ -1,30 +1,86 @@
-import { MessageCirclePlus } from "lucide-react";
+import {MenuIcon, MessageCirclePlus } from "lucide-react";
 import { Logo } from "./Logo";
 import { UserMenu } from "./UserMenu";
 import Sidebar from "./Sidebar";
+import { IconButton } from "@mui/material";
+import ChatControl from "../ui/chat-control";
+import MenuOpenIcon from '@mui/icons-material/MenuOpen';
+export function Header({ createNewChat,open,setOpen,recent,setRecent }) {
+  const handleDrawerOpen = () => {
+    setOpen(true);
+    setRecent(true)
+  };
+ const handleDrawerClose=()=>{
+  setOpen(false);
+  setRecent(false)
+ }
 
-export function Header({ createNewChat,open,setOpen }) {
   return (
-    <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 shadow-sm z-50">
+ 
+    <header className="fixed top-0 left-0 right-0 h-16 bg-[#303540] border-b border-gray-200 shadow-sm z-50">
       <div className="max-w-7xl mx-auto h-full px-4 flex items-center justify-between">
-        <div className={`flex ${open ? "lg:ml-48" :""}`}>
-          <div className="mr-16">
-          <Sidebar createNewChat={createNewChat} open={open} setOpen={setOpen}/>
+        <div className="flex">
+          <div className="flex">
+            {open ? (<IconButton
+  size="large"
+  edge="start"
+  aria-label="menu"
+  onClick={handleDrawerClose}
+  disableRipple // Removes ripple effect
+  disableFocusRipple // Removes focus ripple
+  sx={{
+    mr: 2,
+    color: 'white',
+    '&:focus': { outline: 'none' }, // Removes focus outline
+    '&:active': { outline: 'none' }, // Removes outline on click
+  }}
+>
+  <MenuOpenIcon style={{ color: 'white' }} />
+</IconButton>
+) : (      <IconButton
+          size="large"
+          edge="start"
+          aria-label="menu"
+          onClick={handleDrawerOpen}
+          disableFocusRipple // Removes focus ripple
+          sx={{
+            mr: 2,
+            color: 'white',
+            '&:focus': { outline: 'none' }, // Removes focus outline
+            '&:active': { outline: 'none' }, // Removes outline on click
+          }}
+          >
+  <MenuIcon style={{ color: 'white' }} /> {/* Ensures the MenuIcon is white */}
+</IconButton>)}
+    
+
+         <div className="mt-2 ml-8">
+         <Logo /> 
+         </div>
+        
           </div>
-        <div className="lg:-ml-80 mt-2">
-        <Logo />
-        </div>
+        
+          {/* <div className="mr-16 mt-16">
+          <Sidebar createNewChat={createNewChat} open={open} setOpen={setOpen} recent={recent} setRecent={setRecent}/>
+          </div> */}
+        {/* <div className="lg:-ml-80 mt-2"> */}
+        {/* <Logo /> */}
+        {/* </div> */}
        
         </div>
        
         {/* <Navigation /> */}
         <UserMenu />
 
-        <div className="relative group">
-          {/* <MessageCirclePlus
-            className="cursor-pointer w-6 h-6 text-indigo-600"
+        <div className="flex relative group ml-2">
+         
+          <ChatControl/>
+        
+          
+          <MessageCirclePlus
+            className="cursor-pointer w-8 h-8 text-white ml-4"
             onClick={() => createNewChat()}
-          /> */}
+          />
         
         </div>
       </div>

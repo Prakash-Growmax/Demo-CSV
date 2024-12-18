@@ -8,14 +8,16 @@ import ChatBox from "./ChatBox";
 import { ChatInput } from "../ChatInput";
 import { useParams } from "react-router-dom";
 import { useGetChatHistory } from "@/hooks/useGetChatHistory";
+import Sidebar from "../Header/Sidebar";
 interface ChatProps{
   message:(chat:string)=>void
+ 
 }
-function Chat({message}:ChatProps){
+function Chat({message,recent,setRecent}:ChatProps){
     const [open, setOpen] = useState(false);
     const { queue, processing, addToQueue, processQueue } = useMessageQueue();
     const [isUploading, setIsUploading] = useState(false);
-   
+    
    
     const [state, setState] = useState<ChatState>({
       messages: [],
@@ -139,14 +141,16 @@ function Chat({message}:ChatProps){
   
     return (
       <div className="relative h-screen flex flex-col overflow-x-hidden">
-      <Header createNewChat={createNewChat} open={open} setOpen={setOpen} />
+      <Header createNewChat={createNewChat} open={open} setOpen={setOpen} recent={recent} setRecent={setRecent} />
+      
+    
+    
+      
+    
       {(!state.s3Key && !message) && <GChatterIntro />}
+      <Sidebar createNewChat={createNewChat} open={open} setOpen={setOpen} recent={recent} setRecent={setRecent}/>
       <div
-        className={`transition-transform duration-300 items-center  ease-in-out ${
-          open
-            ? "lg:translate-x-[100px] lg:w-[1430px] md:translate-x-[100px]"
-            : ""
-        }`}
+        className="transition-transform duration-300 items-center  ease-in-out "
         style={{
           height:"auto",
           overflow:"auto",
@@ -163,11 +167,7 @@ function Chat({message}:ChatProps){
     
       <div>
         <div
-          className={`flex items-center px-4 bg-[#F6F8FA] sticky bottom-0 left-0 right-0 z-10 py-4 ${
-            open
-              ? "lg:translate-x-[150px] lg:w-[1330px] md:translate-x-[200px] md:w-[500px]"
-              : ""
-          }`}
+          className="flex items-center px-4 bg-[#F6F8FA] sticky  bottom-0 left-0 right-0 z-10 py-4 "
         >
           <div className="flex-1 w-full sm:pl-16 sm:pr-16 lg:pl-48 lg:pr-48 lg:py-2">
             <ChatInput

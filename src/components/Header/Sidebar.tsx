@@ -87,55 +87,42 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 interface SideBarProps{
  open:boolean,
  setOpen:(side:boolean)=>void,
+ recent:boolean
+ setRecent:(rec:boolean)=>void
  createNewChat:(chat:string)=>void
 }
 
-export default function Sidebar({open,setOpen,createNewChat}:SideBarProps) {
+export default function Sidebar({open,setOpen,createNewChat,recent,setRecent}:SideBarProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 //   const [open, setOpen] = React.useState(false);
    const navigator = useNavigate();
   const handleDrawerOpen = () => {
     setOpen(true);
+    setRecent(true)
   };
 
-  const handleDrawerClose = (e) => {
-    e.preventDefault(); // Prevent default link behavior
-    e.stopPropagation(); 
-    setOpen(false);
-  };
+  // const handleDrawerClose = (e) => {
+  //   e.preventDefault(); // Prevent default link behavior
+  //   e.stopPropagation(); 
+  //   setOpen(false);
+  //   setRecent(false)
+  // };
   const handleNewChat = (e) =>{
     e.preventDefault(); // Prevent default link behavior
     e.stopPropagation(); 
     createNewChat()
     setOpen(false)
+    setRecent(false)
     navigator('/');
   }
  
   
   const {data}=useChatList();
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex'}}>
       <CssBaseline />
-    
-    
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={[
-              {
-                mr: 2,
-              },
-              open && { display: 'none' },
-            ]}
-          >
-            <MenuIcon />
-          </IconButton>
-      
-      
-    
+  
       <Drawer
         sx={{
           width:isMobile ? "100%":drawerWidth,
@@ -143,18 +130,13 @@ export default function Sidebar({open,setOpen,createNewChat}:SideBarProps) {
           '& .MuiDrawer-paper': {
             width:isMobile ? "100%":drawerWidth,
             boxSizing: 'border-box',
+            marginTop:"70px"
           },
         }}
         variant="persistent"
         anchor="left"
         open={open}
       >
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </IconButton>
-        </DrawerHeader>
-        {/* <Divider /> */}
         <List>
         <div className='flex cursor-pointer px-4' onClick={handleNewChat}>
             <div>
@@ -163,9 +145,10 @@ export default function Sidebar({open,setOpen,createNewChat}:SideBarProps) {
            
           />
             </div>
-          <div className='ml-2'>
-          <p className='test-sm'>Start new chat</p>
-          </div>
+            <div className='ml-2'>
+  <p className='text-lg'>Start new chat</p>
+</div>
+
         
         </div>
         </List>
@@ -174,11 +157,12 @@ export default function Sidebar({open,setOpen,createNewChat}:SideBarProps) {
   {data.map((datas, index) => (
     <ListItem key={index} className="flex items-center">
       {/* Icon and Text Section */}
-      <div className='flex'   onClick={(e) => {
-    e.preventDefault(); // Prevent default link behavior
-    e.stopPropagation(); // Stop bubbling
+      <div className='flex'   onClick={() => {
+    // e.preventDefault(); // Prevent default link behavior
+    // e.stopPropagation(); // Stop bubbling
     navigator(`/chat/${datas.chat_id}`);
-    setOpen(true)
+    setOpen(false);
+   
   }}>
       <div className='flex mt-2'>
       <ListItemIcon className="min-w-[30px] mr-2"> {/* Closer spacing */}

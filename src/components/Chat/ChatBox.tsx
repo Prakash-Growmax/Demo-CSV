@@ -29,30 +29,22 @@ export default function ChatBox({
   const { queue, processing, addToQueue, processQueue } = useMessageQueue();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
- 
-  // Scroll to bottom function
-  const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, []);
-  // const scrollToBottom = useCallback(() => {
-  //   if (messagesEndRef.current) {
-  //     // Calculate a partial scroll instead of full scroll
-  //     const scrollArea = scrollAreaRef.current;
-  //     if (scrollArea) {
-  //       // Scroll to near the bottom, leaving some context visible
-  //       const partialScroll = scrollArea.scrollHeight - scrollArea.clientHeight -110; // Adjust 100 as needed
-  //       scrollArea.scrollTo({
-  //         top: partialScroll,
-  //         behavior: 'smooth'
-  //       });
-  //     }
-  //   }
-  // }, []);
 
+  const scrollToBottom = useCallback(() => {
+    if (messagesEndRef.current) {
+      // Use a small delay to prevent immediate scrolling
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'nearest' // This helps with more subtle scrolling
+        });
+      }, 100); // Small delay to prevent jarring scroll
+    }
+  }, []);
   // Effect to scroll to bottom when messages change
   useEffect(() => {
     scrollToBottom();
-  }, [state.messages, scrollToBottom,state.s3Key]);
+  }, [state.messages, scrollToBottom]);
 
   const handleError = (error: string) => {
     setState((prev) => ({ ...prev, error, csvData: null }));
