@@ -9,15 +9,16 @@ import { ChatInput } from "../ChatInput";
 import { useParams } from "react-router-dom";
 import { useGetChatHistory } from "@/hooks/useGetChatHistory";
 import Sidebar from "../Header/Sidebar";
+import RightSideBar from "../ui/rightside-drawer";
 interface ChatProps{
   message:(chat:string)=>void
- 
+  recent:boolean
 }
-function Chat({message,recent,setRecent}:ChatProps){
+function Chat({message,recent}:ChatProps){
     const [open, setOpen] = useState(false);
     const { queue, processing, addToQueue, processQueue } = useMessageQueue();
     const [isUploading, setIsUploading] = useState(false);
-    
+    const [openRight,setOpenRight]=useState(false)
    
     const [state, setState] = useState<ChatState>({
       messages: [],
@@ -140,20 +141,29 @@ function Chat({message,recent,setRecent}:ChatProps){
     }, [processing, queue, processQueue, processMessage]);
   
     return (
-      <div className="relative h-screen flex flex-col overflow-x-hidden">
-      <Header createNewChat={createNewChat} open={open} setOpen={setOpen} recent={recent} setRecent={setRecent} />
-      
+      <div className="relative h-screen w-screen flex flex-col overflow-x-hidden">
     
     
-      
-    
-      {(!state.s3Key && !message) && <GChatterIntro />}
-      <Sidebar createNewChat={createNewChat} open={open} setOpen={setOpen} recent={recent} setRecent={setRecent}/>
+      <Header
+        createNewChat={createNewChat}
+        open={open}
+        setOpen={setOpen}
+        openRight={openRight}
+        setOpenRight={setOpenRight}
+      />
+      <div className={openRight ? "translate-x-[-200px]" :""}>
+      {!state.s3Key && <GChatterIntro />}
+      </div>
+     
+      <Sidebar createNewChat={createNewChat} open={open} setOpen={setOpen} />
+      <RightSideBar openRight={openRight} setOpenRight={setOpenRight} />
       <div
-        className="transition-transform duration-300 items-center  ease-in-out "
+        className={`transition-transform duration-300 ease-in-out ${
+          openRight ? "lg:translate-x-[-300px] lg:w-full lg:px-24" : "translate-x-0"
+        }`}
         style={{
-          height:"auto",
-          overflow:"auto",
+          height: "auto",
+          overflow: "auto",
           backgroundColor: "#F6F8FA",
         }}
       >
@@ -162,43 +172,48 @@ function Chat({message,recent,setRecent}:ChatProps){
           setState={setState}
           isUploading={isUploading}
           setIsUploading={setIsUploading}
+          recent={recent}
+          
         />
       </div>
     
-      <div>
-        <div
-          className="flex items-center px-4 bg-[#F6F8FA] sticky  bottom-0 left-0 right-0 z-10 py-4 "
-        >
-          <div className="flex-1 w-full sm:pl-16 sm:pr-16 lg:pl-48 lg:pr-48 lg:py-2">
-            <ChatInput
-              onSend={handleSendMessage}
-              disabled={state.isLoading || !state.s3Key}
-              onError={handleError}
-              isUploading={isUploading}
-              setIsUploading={setIsUploading}
-              s3Key={state.s3Key || ""}
-              bucket={import.meta.env.VITE_S3_BUCKET_NAME}
-              onFileUploaded={(key: string) => {
-                setState({
-                  ...state,
-                  s3Key: key,
-                  messages: [
-                    {
-                      id: Date.now().toString(),
-                      content:
-                        'CSV data loaded successfully! Try asking me questions about the data. Type "help" to see what I can do.',
-                      role: "assistant",
-                      timestamp: new Date(),
-                      type: "text",
-                    },
-                  ],
-                });
-              }}
-            />
-          </div>
+      <div
+        className={`flex items-center px-4 bg-[#F6F8FA] sticky bottom-0 left-0 right-0 z-10 py-4  transition-transform duration-300 ease-in-out ${
+          openRight ? "lg:translate-x-[-200px] lg:w-[1350px] lg:px-16 lg:ml-8" : ""
+        }`}
+      >
+        <div className="flex-1 w-full sm:pl-16 sm:pr-16 lg:pl-48 lg:pr-48 lg:py-2">
+          <ChatInput
+            onSend={handleSendMessage}
+            disabled={state.isLoading || !state.s3Key}
+            onError={handleError}
+            isUploading={isUploading}
+            setIsUploading={setIsUploading}
+            s3Key={state.s3Key || ""}
+            bucket={import.meta.env.VITE_S3_BUCKET_NAME}
+            onFileUploaded={(key: string) => {
+              setState({
+                ...state,
+                s3Key: key,
+                messages: [
+                  {
+                    id: Date.now().toString(),
+                    content:
+                      'CSV data loaded successfully! Try asking me questions about the data. Type "help" to see what I can do.',
+                    role: "assistant",
+                    timestamp: new Date(),
+                    type: "text",
+                  },
+                ],
+              });
+            }}
+          />
         </div>
       </div>
+    
+   
     </div>
+    
     
   
     

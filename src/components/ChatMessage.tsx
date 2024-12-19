@@ -11,14 +11,14 @@ import { useCurrentPng} from "recharts-to-png";
 import FileSaver from "file-saver";
 interface ChatMessageProps {
   message: Message;
-  
+  recent:boolean;
 }
 
-export function ChatMessage({ message}: ChatMessageProps) {
+export function ChatMessage({ message,recent}: ChatMessageProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const isUser = message.role === "user";
   const [getAreaPng, { ref: areaRef }] = useCurrentPng();
-  
+
 
   const handleDownload = useCallback(async () => {
     try {

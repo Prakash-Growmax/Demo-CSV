@@ -1,6 +1,5 @@
 
 export function useGetChatHistory(chatId) {
-    console.log(chatId)
     const getChatHistory = {
       status: 200,
       data: {

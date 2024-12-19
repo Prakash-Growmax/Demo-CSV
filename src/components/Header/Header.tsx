@@ -5,14 +5,18 @@ import Sidebar from "./Sidebar";
 import { IconButton } from "@mui/material";
 import ChatControl from "../ui/chat-control";
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
-export function Header({ createNewChat,open,setOpen,recent,setRecent }) {
+import RightSideBar from "../ui/rightside-drawer";
+export function Header({ createNewChat,open,setOpen,openRight,setOpenRight}) {
   const handleDrawerOpen = () => {
     setOpen(true);
-    setRecent(true)
+
   };
  const handleDrawerClose=()=>{
   setOpen(false);
-  setRecent(false)
+ 
+ }
+ const handleChatControl=()=>{
+  setOpenRight(!openRight)
  }
 
   return (
@@ -35,7 +39,7 @@ export function Header({ createNewChat,open,setOpen,recent,setRecent }) {
     '&:active': { outline: 'none' }, // Removes outline on click
   }}
 >
-  <MenuOpenIcon style={{ color: 'white' }} />
+  <MenuOpenIcon style={{ color: 'white'}} />
 </IconButton>
 ) : (      <IconButton
           size="large"
@@ -60,9 +64,7 @@ export function Header({ createNewChat,open,setOpen,recent,setRecent }) {
         
           </div>
         
-          {/* <div className="mr-16 mt-16">
-          <Sidebar createNewChat={createNewChat} open={open} setOpen={setOpen} recent={recent} setRecent={setRecent}/>
-          </div> */}
+        
         {/* <div className="lg:-ml-80 mt-2"> */}
         {/* <Logo /> */}
         {/* </div> */}
@@ -73,15 +75,19 @@ export function Header({ createNewChat,open,setOpen,recent,setRecent }) {
         <UserMenu />
 
         <div className="flex relative group ml-2">
-         
+          <div className="flex" onClick={handleChatControl}>
           <ChatControl/>
+          </div>
+        
         
           
           <MessageCirclePlus
             className="cursor-pointer w-8 h-8 text-white ml-4"
             onClick={() => createNewChat()}
           />
-        
+         
+  
+      
         </div>
       </div>
     </header>

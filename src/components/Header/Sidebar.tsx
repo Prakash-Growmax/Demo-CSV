@@ -87,19 +87,18 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 interface SideBarProps{
  open:boolean,
  setOpen:(side:boolean)=>void,
- recent:boolean
- setRecent:(rec:boolean)=>void
+
  createNewChat:(chat:string)=>void
 }
 
-export default function Sidebar({open,setOpen,createNewChat,recent,setRecent}:SideBarProps) {
+export default function Sidebar({open,setOpen,createNewChat}:SideBarProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 //   const [open, setOpen] = React.useState(false);
    const navigator = useNavigate();
   const handleDrawerOpen = () => {
     setOpen(true);
-    setRecent(true)
+  
   };
 
   // const handleDrawerClose = (e) => {
@@ -113,7 +112,7 @@ export default function Sidebar({open,setOpen,createNewChat,recent,setRecent}:Si
     e.stopPropagation(); 
     createNewChat()
     setOpen(false)
-    setRecent(false)
+  
     navigator('/');
   }
  
@@ -130,7 +129,8 @@ export default function Sidebar({open,setOpen,createNewChat,recent,setRecent}:Si
           '& .MuiDrawer-paper': {
             width:isMobile ? "100%":drawerWidth,
             boxSizing: 'border-box',
-            marginTop:"70px"
+            marginTop:"70px",
+            backgroundColor: "#F6F8FA"
           },
         }}
         variant="persistent"

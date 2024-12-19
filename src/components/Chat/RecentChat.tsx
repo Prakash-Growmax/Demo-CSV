@@ -5,11 +5,11 @@ import { useState } from "react";
 
 const RecentChat=()=>{
     const { id } = useParams();
-    const [recent,setRecent]=useState(true);
  const {data}=useGetChatHistory(id);
- console.log(data);
+ const [recent,setRecent]=useState(true);
+
  return(
-    <Chat message={data} recent={recent} setRecent={setRecent}/>
+    <Chat message={data} recent={recent}/>
  )
 
 }

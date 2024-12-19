@@ -18,18 +18,21 @@ interface ChatBoxProps {
   setState: (state: ChatState) => void;
   isUploading: boolean;
   setIsUploading: (state: boolean) => void;
+  recent:boolean;
+
 }
 
 export default function ChatBox({
   state,
   setState,
   isUploading,
-  setIsUploading
+  setIsUploading,
+  recent
 }: ChatBoxProps) {
   const { queue, processing, addToQueue, processQueue } = useMessageQueue();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
+ 
   const scrollToBottom = useCallback(() => {
     if (messagesEndRef.current) {
       // Use a small delay to prevent immediate scrolling
@@ -79,6 +82,7 @@ export default function ChatBox({
                               key={message.id} 
                               message={message} 
                               state={state}
+                              recent={recent}
                             />
                           ))}
 
