@@ -9,6 +9,7 @@ import { useCallback, useState } from "react";
 import Typewriter from "typewriter-effect";
 import { useCurrentPng} from "recharts-to-png";
 import FileSaver from "file-saver";
+import Plot from "react-plotly.js";
 interface ChatMessageProps {
   message: Message;
   recent:boolean;
@@ -64,21 +65,54 @@ export function ChatMessage({ message,recent}: ChatMessageProps) {
           transition={{ duration: 0.5 }}
           className="relative mt-4"
         >
-          <Button
+          {/* <Button
             variant="outline"
             size="icon"
             className="absolute top-2 right-2 z-10"
             onClick={() => setIsFullscreen(true)}
           >
             <Maximize2 className="h-4 w-4 text-gray-500 hover:text-gray-800" />
-          </Button>
+          </Button> */}
           {/* <div style={{ width: '600px', height: '350px' }} className="flex flex-col"> */}
         
             <div 
   className="flex flex-col  lg:w-[600px] lg:h-[350px] md:w-[400px] max-w-full" 
 >
 <div ref={areaRef}>
-            <DataChart data={message.data} />
+ 
+<Plot
+            data={[
+                {
+                    type: "bar",
+                    x: ["Product A", "Product B", "Product C"],
+                    y: [20, 14, 23],
+                    name: "Sales",
+                    marker: { color: "rgb(55, 83, 109)" },
+                },
+            ]}
+            layout={{
+                title: {
+                    text: "Sales Data",
+                    font: { size: 24 },
+                },
+                xaxis: {
+                    title: "Products",
+                    showgrid: true,
+                    zeroline: true,
+                },
+                yaxis: {
+                    title: "Quantity Sold",
+                    showgrid: true,
+                    zeroline: true,
+                },
+                barmode: "group",
+                width: 500, // Set the fixed width
+                height: 350, // Set the fixed height
+            }}
+        />
+  </div>
+
+            {/* <DataChart data={message.data} /> */}
             </div>
  
   {/* <hr className="m-2 border-gray-300 w-full" /> */}
@@ -88,7 +122,7 @@ export function ChatMessage({ message,recent}: ChatMessageProps) {
       >
         Download Chart as PNG
       </button> */}
-</div>
+
           
        
         

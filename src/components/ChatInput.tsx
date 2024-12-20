@@ -7,7 +7,8 @@ import { useCallback, useRef, useState } from "react";
 import { S3UploadError, UploadProgress, uploadToS3 } from "@/lib/s3-client";
 import { CSVPreview } from "./CSVPreview/CSVPreview";
 import Spinner from "./ui/Spinner";
-
+import { Tooltip } from "@mui/material";
+import { useSnackbar } from "notistack";
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -25,7 +26,7 @@ export function ChatInput({ onSend, disabled, onFileUploaded, onError,isUploadin
   const [rows, setRows] = useState(1);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
- 
+  const { enqueueSnackbar } = useSnackbar();
   const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -58,10 +59,13 @@ export function ChatInput({ onSend, disabled, onFileUploaded, onError,isUploadin
     },
     [onFileUploaded, onError]
   );
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("🚀 ~ ChatInput ~ input:", input);
+     if(!s3Key){
+      setError("Please upload a file before submitting.");
+      return;
+     }
 
     if (input.trim() && !isSubmitting) {
       setIsSubmitting(true);
@@ -110,12 +114,15 @@ export function ChatInput({ onSend, disabled, onFileUploaded, onError,isUploadin
               id="csv-upload"
               disabled={isUploading}
             />
+            <Tooltip title="Upload">
             <Upload
               size={24}
               // color="#3B82F6"
               className="cursor-pointer text-blue-700 hover:bg-gray-200 active:bg-gray-300 w-8 h-8 p-1 rounded-full"
               onClick={() => document.getElementById("csv-upload")?.click()}
             />
+            </Tooltip>
+         
             </>
            )}
         
